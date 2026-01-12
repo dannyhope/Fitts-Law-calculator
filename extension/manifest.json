@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Fitts' Law Overlay",
+  "version": "1.0.0",
+  "description": "Visualize Fitts' Law acquisition times for all clickable elements on any webpage using Shannon's formulation",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Toggle Fitts' Law Overlay"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["lib/fitts-law.js", "content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "author": "Danny Hope <danny.hope@gmail.com>",
+  "homepage_url": "https://github.com/dannyhope/fitts-law-calculator"
+}

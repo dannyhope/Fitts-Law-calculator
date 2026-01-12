@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Generate Extension Icons</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 40px;
+                text-align: center;
+            }
+            button {
+                margin: 10px;
+                padding: 15px 30px;
+                font-size: 16px;
+                cursor: pointer;
+                background: #4caf50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+            }
+            button:hover {
+                background: #45a049;
+            }
+            .preview {
+                margin: 20px 0;
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+                align-items: center;
+            }
+            canvas {
+                border: 1px solid #ddd;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Generate Fitts' Law Extension Icons</h1>
+        <p>Click the button below to generate and download all icon sizes.</p>
+
+        <div class="preview">
+            <canvas id="preview16" width="16" height="16"></canvas>
+            <canvas id="preview48" width="48" height="48"></canvas>
+            <canvas id="preview128" width="128" height="128"></canvas>
+        </div>
+
+        <button onclick="generateAllIcons()">Generate & Download Icons</button>
+
+        <script>
+            function createIcon(size) {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Background - green from demo
+                ctx.fillStyle = '#9de0ad';
+                ctx.fillRect(0, 0, size, size);
+
+                // Draw "FL" text
+                ctx.fillStyle = 'white';
+                ctx.font = `bold ${size * 0.5}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('FL', size / 2, size / 2);
+
+                return canvas;
+            }
+
+            function downloadCanvas(canvas, filename) {
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
+            }
+
+            function generateAllIcons() {
+                // Generate all sizes
+                const sizes = [
+                    { size: 16, name: 'icon16.png' },
+                    { size: 48, name: 'icon48.png' },
+                    { size: 128, name: 'icon128.png' }
+                ];
+
+                sizes.forEach(({ size, name }) => {
+                    const canvas = createIcon(size);
+                    downloadCanvas(canvas, name);
+                });
+
+                alert(
+                    'Icons generated! Check your downloads folder.\n\nMove the files to:\n' +
+                        window.location.pathname.replace('generate-icons.html', '')
+                );
+            }
+
+            // Preview
+            window.onload = () => {
+                [16, 48, 128].forEach((size) => {
+                    const canvas = document.getElementById(`preview${size}`);
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#9de0ad';
+                    ctx.fillRect(0, 0, size, size);
+                    ctx.fillStyle = 'white';
+                    ctx.font = `bold ${size * 0.5}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('FL', size / 2, size / 2);
+                });
+            };
+        </script>
+    </body>
+</html>

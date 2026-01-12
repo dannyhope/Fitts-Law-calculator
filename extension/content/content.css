@@ -1,0 +1,128 @@
+/**
+ * Styles for Fitts' Law Overlay labels
+ */
+
+.fitts-law-overlay {
+    /* Positioning */
+    position: fixed;
+    z-index: 2147483647; /* Maximum z-index to appear above everything */
+
+    /* Layout */
+    display: inline-block;
+    padding: 4px 8px;
+
+    /* Typography */
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+
+    /* Colors - default (easy target, <= 400ms) */
+    background: rgba(139, 149, 165, 0.9); /* Cool grey for easy targets */
+    color: white;
+
+    /* Visual effects */
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+
+    /* Transitions */
+    transition:
+        background-color 0.2s ease,
+        transform 0.1s ease;
+
+    /* Prevent interaction */
+    pointer-events: none;
+    user-select: none;
+
+    /* Performance */
+    will-change: transform, contents;
+    contain: layout style paint;
+}
+
+/* When cursor is inside the target (acquired) */
+.fitts-law-overlay.inside {
+    background: rgba(76, 175, 80, 0.9); /* Green */
+    color: white;
+    transform: scale(1.1);
+}
+
+/* When acquisition time > 400ms (difficult target) */
+.fitts-law-overlay.difficult {
+    background: rgba(244, 67, 54, 0.9); /* Red */
+    color: white;
+}
+
+/* Hover effect (even though pointer-events: none) */
+.fitts-law-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+}
+
+/* Accessibility: respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .fitts-law-overlay {
+        transition: none;
+        transform: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .fitts-law-overlay {
+        background: #95a1b0; /* Cool grey for easy */
+        color: black;
+        border: 2px solid black;
+    }
+
+    .fitts-law-overlay.inside {
+        background: #00ff00; /* Green for acquired */
+        color: black;
+        border: 2px solid black;
+    }
+
+    .fitts-law-overlay.difficult {
+        background: #ff0000; /* Red for difficult */
+        color: white;
+        border: 2px solid white;
+    }
+}
+
+/* Dim mode overlay - sits above page content but below chips */
+.fitts-law-dim-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: grayscale(100%) contrast(0.6) brightness(0.9);
+    pointer-events: none;
+    z-index: 2147483646; /* Just below chips */
+}
+
+/* Print: hide overlays */
+@media print {
+    .fitts-law-overlay {
+        display: none !important;
+    }
+
+    .fitts-law-dim-overlay {
+        display: none !important;
+    }
+}
+
+/* Highlight mode - outlines are applied dynamically per element with matching colors */
+[data-fitts-highlight] {
+    outline-width: 3px !important;
+    outline-style: solid !important;
+    outline-offset: 4px !important;
+    transition: outline-color 0.2s ease !important;
+}

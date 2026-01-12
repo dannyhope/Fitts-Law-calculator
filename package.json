@@ -1,0 +1,38 @@
+{
+  "name": "fitts-law-calculator",
+  "version": "1.0.0",
+  "description": "Interactive demonstration of Shannon's formulation of Fitts' Law with real-time visualization",
+  "main": "index.html",
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{js,html,css,md}\"",
+    "format:check": "prettier --check \"**/*.{js,html,css,md}\""
+  },
+  "keywords": [
+    "fitts-law",
+    "hci",
+    "human-computer-interaction",
+    "ux",
+    "ui",
+    "interaction-design",
+    "shannon-formulation",
+    "visualization"
+  ],
+  "author": "Danny Hope <danny.hope@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dannyhope/fitts-law-calculator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dannyhope/fitts-law-calculator/issues",
+    "email": "danny.hope@gmail.com"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

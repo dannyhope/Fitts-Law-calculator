@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en-GB">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+        />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline';"
+        />
+        <title>Fitts' Law Demo</title>
+        <style>
+            :root {
+                --color-primary: #9de0ad;
+                --color-primary-hover: #8dd09d;
+                --color-primary-active: #7dc08d;
+                --color-accent: #5a9c6d;
+                --color-text: #333;
+                --color-text-light: #666;
+                --color-text-lighter: #555;
+                --color-bg: #f5f5f5;
+                --color-bg-panel: white;
+                --color-bg-code: #f9f9f9;
+                --color-border: #f0f0f0;
+                --color-red: #ff5555;
+                --color-green: #4caf50;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+                    Cantarell, sans-serif;
+                background: var(--color-bg);
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            .container {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .button {
+                background: var(--color-primary);
+                color: white;
+                font-size: 48px;
+                font-weight: bold;
+                padding: 40px 80px;
+                border: none;
+                border-radius: 12px;
+                cursor: pointer;
+                transition: background 0.2s;
+                text-transform: capitalize;
+            }
+
+            .button:hover {
+                background: var(--color-primary-hover);
+            }
+
+            .button:active {
+                background: var(--color-primary-active);
+            }
+
+            .acquisition-time {
+                font-size: 32px;
+                font-weight: 700;
+                color: var(--color-text);
+                min-height: 40px;
+            }
+
+            .acquisition-time .value {
+                color: var(--color-accent);
+            }
+
+            .formula-panel {
+                position: fixed;
+                left: 40px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: var(--color-bg-panel);
+                padding: 24px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                font-size: 16px;
+                line-height: 1.8;
+                min-width: 300px;
+            }
+
+            .formula-panel h3 {
+                margin: 0 0 16px 0;
+                font-size: 18px;
+                color: var(--color-text);
+                border-bottom: 2px solid var(--color-primary);
+                padding-bottom: 8px;
+            }
+
+            .formula-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 0;
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            .formula-row:last-child {
+                border-bottom: none;
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 2px solid var(--color-primary);
+            }
+
+            .formula-label {
+                color: var(--color-text-light);
+                font-weight: 500;
+            }
+
+            .formula-value {
+                font-weight: 700;
+                color: var(--color-text);
+                font-family: 'Courier New', monospace;
+            }
+
+            .formula-equation {
+                margin: 16px 0;
+                padding: 12px;
+                background: var(--color-bg-code);
+                border-radius: 6px;
+                text-align: center;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+                color: var(--color-text-lighter);
+            }
+
+            .info {
+                position: absolute;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                text-align: center;
+                color: var(--color-text-light);
+                font-size: 14px;
+            }
+
+            .info a {
+                color: var(--color-accent);
+                text-decoration: none;
+            }
+
+            .info a:hover {
+                text-decoration: underline;
+            }
+
+            .line {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 1000;
+                will-change: transform;
+            }
+
+            .line line {
+                will-change: transform;
+            }
+
+            .line text {
+                paint-order: stroke;
+                stroke: white;
+                stroke-width: 3px;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                will-change: transform;
+            }
+
+            .highlight-clickables button,
+            .highlight-clickables a,
+            .highlight-clickables input[type='button'],
+            .highlight-clickables input[type='submit'],
+            .highlight-clickables [role='button'],
+            .highlight-clickables [onclick] {
+                outline: 3px solid var(--color-accent) !important;
+                outline-offset: 4px;
+            }
+
+            .controls {
+                position: fixed;
+                right: 40px;
+                top: 40px;
+                background: var(--color-bg-panel);
+                padding: 16px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .control-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .control-row input[type='checkbox'] {
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+                accent-color: var(--color-accent);
+            }
+
+            .control-row label {
+                font-size: 14px;
+                color: var(--color-text);
+                cursor: pointer;
+                user-select: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="controls" role="region" aria-label="Display options">
+            <div class="control-row">
+                <input
+                    type="checkbox"
+                    id="highlightClickables"
+                    aria-label="Highlight all clickable elements"
+                />
+                <label for="highlightClickables">Highlight clickable elements</label>
+            </div>
+        </div>
+
+        <div class="formula-panel" role="region" aria-label="Fitts' Law calculation values">
+            <h3>Fitts' Law Values</h3>
+
+            <div
+                class="formula-equation"
+                role="img"
+                aria-label="Shannon's formulation: Movement Time equals a plus b times logarithm base 2 of Distance divided by Width plus 1"
+            >
+                MT = a + b × log₂(D/W + 1)
+            </div>
+
+            <div class="formula-row">
+                <span class="formula-label">D (Distance):</span>
+                <span class="formula-value" id="distanceValue">0 px</span>
+            </div>
+
+            <div class="formula-row">
+                <span class="formula-label">W (Effective Width):</span>
+                <span class="formula-value" id="widthValue">0 px</span>
+            </div>
+
+            <div class="formula-row">
+                <span class="formula-label">D/W Ratio:</span>
+                <span class="formula-value" id="ratioValue">0</span>
+            </div>
+
+            <div class="formula-row">
+                <span class="formula-label">ID (Index of Difficulty):</span>
+                <span class="formula-value" id="idValue">0 bits</span>
+            </div>
+
+            <div class="formula-row">
+                <span class="formula-label">a (constant):</span>
+                <span class="formula-value">0 ms</span>
+            </div>
+
+            <div class="formula-row">
+                <span class="formula-label">b (constant):</span>
+                <span class="formula-value">150 ms/bit</span>
+            </div>
+
+            <div class="formula-row">
+                <span class="formula-label">MT (Movement Time):</span>
+                <span class="formula-value" id="mtValue">0 ms</span>
+            </div>
+        </div>
+
+        <div class="container">
+            <button
+                class="button"
+                id="targetButton"
+                aria-label="Target button for Fitts' Law demonstration"
+            >
+                Button
+            </button>
+            <div class="acquisition-time" id="acquisitionTime" role="status" aria-live="polite">
+                Move your mouse to see acquisition time
+            </div>
+        </div>
+
+        <svg
+            id="lineSvg"
+            class="line"
+            role="img"
+            aria-label="Visualization showing distance from cursor to target and effective width along approach path"
+        >
+            <desc>
+                Red line shows path from cursor to button center. Green line shows overlap distance
+                through button (effective width).
+            </desc>
+            <line
+                id="mouseLine"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="0"
+                stroke="var(--color-red)"
+                stroke-width="3"
+                opacity="0.7"
+                aria-label="Distance line"
+            />
+            <line
+                id="widthLine"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="0"
+                stroke="var(--color-green)"
+                stroke-width="4"
+                opacity="0.8"
+                aria-label="Effective width line"
+            />
+            <text
+                id="distanceLabel"
+                x="0"
+                y="0"
+                fill="var(--color-red)"
+                font-size="14"
+                font-weight="bold"
+                aria-label="Distance value"
+            >
+                D
+            </text>
+            <text
+                id="widthLabel"
+                x="0"
+                y="0"
+                fill="var(--color-green)"
+                font-size="14"
+                font-weight="bold"
+                aria-label="Width value"
+            >
+                W
+            </text>
+        </svg>
+
+        <div class="info">
+            <p>
+                <strong>Red line</strong> = Pointer to button centre | <strong>D</strong> = Distance
+                to entry point | <strong>W (green)</strong> = Overlap through button
+            </p>
+            <p style="margin-top: 8px">
+                <a href="mailto:danny.hope@gmail.com">Feedback</a>
+            </p>
+        </div>
+
+        <script>
+            'use strict';
+
+            /**
+             * Configuration object for all constants
+             */
+            const CONFIG = {
+                // Shannon formulation constants
+                FITTS_LAW_A: 0, // Starting time constant (ms)
+                FITTS_LAW_B: 150, // Slope constant (ms per bit)
+
+                // Label positioning offsets
+                LABEL_OFFSET_X: 10,
+                LABEL_OFFSET_Y_DISTANCE: -10,
+                LABEL_OFFSET_Y_WIDTH: 20,
+
+                // Safety constants
+                MIN_WIDTH: 0.1, // Minimum width to prevent division by zero
+                EPSILON: 0.0001, // Threshold for avoiding division by zero in line calculations
+
+                // Performance tuning
+                MOUSE_THROTTLE_MS: 16, // ~60fps throttling for mouse events
+                RESIZE_DEBOUNCE_MS: 150 // Debounce delay for window resize
+            };
+
+            // DOM element references
+            const button = document.getElementById('targetButton');
+            const acquisitionTimeDisplay = document.getElementById('acquisitionTime');
+            const mouseLine = document.getElementById('mouseLine');
+            const widthLine = document.getElementById('widthLine');
+            const distanceLabel = document.getElementById('distanceLabel');
+            const widthLabel = document.getElementById('widthLabel');
+            const distanceValue = document.getElementById('distanceValue');
+            const widthValue = document.getElementById('widthValue');
+            const ratioValue = document.getElementById('ratioValue');
+            const idValue = document.getElementById('idValue');
+            const mtValue = document.getElementById('mtValue');
+
+            // Mouse position state
+            let mouseX = 0;
+            let mouseY = 0;
+
+            // Cached button geometry
+            let BUTTON_CACHE = {
+                centerX: 0,
+                centerY: 0,
+                rect: null
+            };
+
+            /**
+             * Calculate Euclidean distance between two points in 2D space
+             * @param {number} x1 - X coordinate of first point
+             * @param {number} y1 - Y coordinate of first point
+             * @param {number} x2 - X coordinate of second point
+             * @param {number} y2 - Y coordinate of second point
+             * @returns {number} Distance between the two points
+             */
+            function calculateDistance(x1, y1, x2, y2) {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            /**
+             * Update cached button geometry (position and dimensions)
+             * Caches button center coordinates and bounding rectangle for performance
+             * @throws {Error} If button element doesn't exist or getBoundingClientRect fails
+             */
+            function updateButtonCache() {
+                try {
+                    if (!button) {
+                        throw new Error('Button element not found');
+                    }
+                    const rect = button.getBoundingClientRect();
+                    BUTTON_CACHE.rect = rect;
+                    BUTTON_CACHE.centerX = rect.left + rect.width / 2;
+                    BUTTON_CACHE.centerY = rect.top + rect.height / 2;
+                } catch (error) {
+                    console.error('Failed to update button cache:', error);
+                    // Provide fallback values
+                    BUTTON_CACHE.rect = {
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: 0,
+                        height: 0
+                    };
+                    BUTTON_CACHE.centerX = 0;
+                    BUTTON_CACHE.centerY = 0;
+                }
+            }
+
+            /**
+             * Find intersection points between a line segment and a rectangle
+             *
+             * Uses parametric line equation: P(t) = P1 + t(P2 - P1) where t ∈ [0, 1]
+             * For each edge of the rectangle, solve for t where the line intersects that edge
+             *
+             * Mathematical approach:
+             * - For horizontal edges (y = constant): solve t from y1 + t*dy = edge_y
+             * - For vertical edges (x = constant): solve t from x1 + t*dx = edge_x
+             * - t = 0 means point is at (x1,y1), t = 1 means point is at (x2,y2)
+             * - Only consider intersections where 0 ≤ t ≤ 1 (on the line segment)
+             *
+             * @param {number} x1 - X coordinate of line start point
+             * @param {number} y1 - Y coordinate of line start point
+             * @param {number} x2 - X coordinate of line end point
+             * @param {number} y2 - Y coordinate of line end point
+             * @param {DOMRect} rect - Rectangle with left, right, top, bottom properties
+             * @returns {Array<{x: number, y: number, t: number}>} Array of intersection points with parametric t value
+             */
+            function lineRectangleIntersection(x1, y1, x2, y2, rect) {
+                const intersections = [];
+
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+
+                // Avoid division by zero for horizontal/vertical lines
+                // EPSILON check prevents numerical instability
+
+                // Top and bottom edges (check if line is not horizontal)
+                if (Math.abs(dy) > CONFIG.EPSILON) {
+                    // Top edge: solve for t where y1 + t*dy = rect.top
+                    let t = (rect.top - y1) / dy;
+                    if (t >= 0 && t <= 1) {
+                        const x = x1 + t * dx;
+                        if (x >= rect.left && x <= rect.right) {
+                            intersections.push({ x, y: rect.top, t });
+                        }
+                    }
+
+                    // Bottom edge: solve for t where y1 + t*dy = rect.bottom
+                    t = (rect.bottom - y1) / dy;
+                    if (t >= 0 && t <= 1) {
+                        const x = x1 + t * dx;
+                        if (x >= rect.left && x <= rect.right) {
+                            intersections.push({ x, y: rect.bottom, t });
+                        }
+                    }
+                }
+
+                // Left and right edges (check if line is not vertical)
+                if (Math.abs(dx) > CONFIG.EPSILON) {
+                    // Left edge: solve for t where x1 + t*dx = rect.left
+                    let t = (rect.left - x1) / dx;
+                    if (t >= 0 && t <= 1) {
+                        const y = y1 + t * dy;
+                        if (y >= rect.top && y <= rect.bottom) {
+                            intersections.push({ x: rect.left, y, t });
+                        }
+                    }
+
+                    // Right edge: solve for t where x1 + t*dx = rect.right
+                    t = (rect.right - x1) / dx;
+                    if (t >= 0 && t <= 1) {
+                        const y = y1 + t * dy;
+                        if (y >= rect.top && y <= rect.bottom) {
+                            intersections.push({ x: rect.right, y, t });
+                        }
+                    }
+                }
+
+                return intersections;
+            }
+
+            /**
+             * Calculate Fitts' Law metrics for current mouse position
+             *
+             * Implements Shannon's formulation: MT = a + b × log₂(D/W + 1)
+             * Where:
+             * - MT = Movement Time (predicted acquisition time)
+             * - D = Distance from pointer to button entry point
+             * - W = Width (overlap length through button along approach path)
+             * - ID = Index of Difficulty = log₂(D/W + 1)
+             *
+             * @param {number} mouseX - Current mouse X position
+             * @param {number} mouseY - Current mouse Y position
+             * @returns {Object} Metrics object with time, distance, width, ratio, id, points, and isInside
+             * @throws {Error} If button cache is not initialized
+             */
+            function calculateFittsLawMetrics(mouseX, mouseY) {
+                // Validate button cache exists
+                if (!BUTTON_CACHE.rect) {
+                    console.error('Button cache not initialized');
+                    return null;
+                }
+
+                const rect = BUTTON_CACHE.rect;
+                const buttonCenterX = BUTTON_CACHE.centerX;
+                const buttonCenterY = BUTTON_CACHE.centerY;
+
+                // Check if mouse is inside the button
+                const isInside =
+                    mouseX >= rect.left &&
+                    mouseX <= rect.right &&
+                    mouseY >= rect.top &&
+                    mouseY <= rect.bottom;
+
+                let distance, effectiveWidth, entryPoint, exitPoint;
+
+                if (isInside) {
+                    // Already inside - target acquired
+                    distance = 0;
+
+                    // Find where line from mouse to center exits the button
+                    const intersections = lineRectangleIntersection(
+                        mouseX,
+                        mouseY,
+                        buttonCenterX,
+                        buttonCenterY,
+                        rect
+                    );
+
+                    if (intersections.length > 0) {
+                        // Find furthest intersection point
+                        exitPoint = intersections.reduce(
+                            (max, p) => (p.t > max.t ? p : max),
+                            intersections[0]
+                        );
+                        entryPoint = { x: mouseX, y: mouseY };
+                        effectiveWidth = calculateDistance(
+                            mouseX,
+                            mouseY,
+                            exitPoint.x,
+                            exitPoint.y
+                        );
+                    } else {
+                        // Fallback: mouse at exact center
+                        effectiveWidth = CONFIG.MIN_WIDTH;
+                        entryPoint = { x: mouseX, y: mouseY };
+                        exitPoint = { x: mouseX, y: mouseY };
+                    }
+                } else {
+                    // Outside - find where line intersects button
+                    const intersections = lineRectangleIntersection(
+                        mouseX,
+                        mouseY,
+                        buttonCenterX,
+                        buttonCenterY,
+                        rect
+                    );
+
+                    if (intersections.length >= 1) {
+                        // Sort by distance along line (t parameter)
+                        intersections.sort((a, b) => a.t - b.t);
+                        entryPoint = intersections[0];
+
+                        // The line goes from pointer to center, so the overlap is from entry to center
+                        exitPoint = { x: buttonCenterX, y: buttonCenterY };
+
+                        // Distance = pointer to entry point
+                        distance = calculateDistance(mouseX, mouseY, entryPoint.x, entryPoint.y);
+
+                        // Width = length of overlap (entry point to center)
+                        effectiveWidth = calculateDistance(
+                            entryPoint.x,
+                            entryPoint.y,
+                            exitPoint.x,
+                            exitPoint.y
+                        );
+                    } else {
+                        // Shouldn't happen, but fallback for safety
+                        distance = calculateDistance(mouseX, mouseY, buttonCenterX, buttonCenterY);
+                        effectiveWidth = CONFIG.MIN_WIDTH;
+                        entryPoint = { x: buttonCenterX, y: buttonCenterY };
+                        exitPoint = { x: buttonCenterX, y: buttonCenterY };
+                    }
+                }
+
+                // Ensure minimum width to prevent division by zero
+                effectiveWidth = Math.max(effectiveWidth, CONFIG.MIN_WIDTH);
+
+                // Shannon formulation: MT = a + b × log₂(D/W + 1)
+                const indexOfDifficulty = Math.log2(distance / effectiveWidth + 1);
+                const movementTime = CONFIG.FITTS_LAW_A + CONFIG.FITTS_LAW_B * indexOfDifficulty;
+
+                return {
+                    time: movementTime,
+                    distance: distance,
+                    width: effectiveWidth,
+                    ratio: distance / effectiveWidth,
+                    id: indexOfDifficulty,
+                    buttonCenter: { x: buttonCenterX, y: buttonCenterY },
+                    entryPoint: entryPoint,
+                    exitPoint: exitPoint,
+                    isInside: isInside
+                };
+            }
+
+            /**
+             * Update text displays with calculated Fitts' Law metrics
+             * @param {Object} result - Metrics from calculateFittsLawMetrics
+             */
+            function updateTextDisplays(result) {
+                if (!result) return;
+
+                // Update main acquisition time display (using textContent for security)
+                if (result.isInside) {
+                    acquisitionTimeDisplay.textContent = 'Target acquired!';
+                    acquisitionTimeDisplay.className = 'acquisition-time value';
+                } else {
+                    acquisitionTimeDisplay.innerHTML = '';
+                    acquisitionTimeDisplay.className = 'acquisition-time';
+                    const text = document.createTextNode('Acquisition time: ');
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'value';
+                    valueSpan.textContent = `${result.time.toFixed(0)} ms`;
+                    acquisitionTimeDisplay.appendChild(text);
+                    acquisitionTimeDisplay.appendChild(valueSpan);
+                }
+
+                // Update formula panel values
+                distanceValue.textContent = `${result.distance.toFixed(1)} px`;
+                widthValue.textContent = `${result.width.toFixed(1)} px`;
+                ratioValue.textContent = result.ratio.toFixed(2);
+                idValue.textContent = `${result.id.toFixed(2)} bits`;
+                mtValue.textContent = `${result.time.toFixed(0)} ms`;
+            }
+
+            /**
+             * Update SVG visualization lines showing distance and overlap
+             * @param {Object} result - Metrics from calculateFittsLawMetrics
+             */
+            function updateVisualizationLines(result) {
+                if (!result) return;
+
+                // Red line: pointer to button center
+                mouseLine.setAttribute('x1', mouseX);
+                mouseLine.setAttribute('y1', mouseY);
+                mouseLine.setAttribute('x2', result.buttonCenter.x);
+                mouseLine.setAttribute('y2', result.buttonCenter.y);
+
+                // Green line: the overlap portion (effective width)
+                widthLine.setAttribute('x1', result.entryPoint.x);
+                widthLine.setAttribute('y1', result.entryPoint.y);
+                widthLine.setAttribute('x2', result.exitPoint.x);
+                widthLine.setAttribute('y2', result.exitPoint.y);
+                widthLine.style.display = 'block';
+            }
+
+            /**
+             * Update and position D and W labels on visualization
+             * @param {Object} result - Metrics from calculateFittsLawMetrics
+             */
+            function updateLabels(result) {
+                if (!result) return;
+
+                // Position distance label
+                if (!result.isInside) {
+                    const midX = (mouseX + result.entryPoint.x) / 2;
+                    const midY = (mouseY + result.entryPoint.y) / 2;
+                    distanceLabel.setAttribute('x', midX + CONFIG.LABEL_OFFSET_X);
+                    distanceLabel.setAttribute('y', midY + CONFIG.LABEL_OFFSET_Y_DISTANCE);
+                    distanceLabel.textContent = `D = ${result.distance.toFixed(0)}px`;
+                    distanceLabel.style.display = 'block';
+                } else {
+                    distanceLabel.style.display = 'none';
+                }
+
+                // Position width label
+                const wMidX = (result.entryPoint.x + result.exitPoint.x) / 2;
+                const wMidY = (result.entryPoint.y + result.exitPoint.y) / 2;
+                widthLabel.setAttribute('x', wMidX + CONFIG.LABEL_OFFSET_X);
+                widthLabel.setAttribute('y', wMidY + CONFIG.LABEL_OFFSET_Y_WIDTH);
+                widthLabel.textContent = `W = ${result.width.toFixed(0)}px`;
+                widthLabel.style.display = 'block';
+            }
+
+            /**
+             * Main update function that recalculates and updates all displays
+             */
+            function updateDisplay() {
+                const result = calculateFittsLawMetrics(mouseX, mouseY);
+                if (!result) return;
+                updateTextDisplays(result);
+                updateVisualizationLines(result);
+                updateLabels(result);
+            }
+
+            /**
+             * Throttle function to limit function call frequency
+             * Ensures function is called at most once per delay period
+             * @param {Function} func - Function to throttle
+             * @param {number} delay - Minimum delay between calls in ms
+             * @returns {Function} Throttled function
+             */
+            function throttle(func, delay) {
+                let lastCall = 0;
+                return function (...args) {
+                    const now = Date.now();
+                    if (now - lastCall >= delay) {
+                        lastCall = now;
+                        func(...args);
+                    }
+                };
+            }
+
+            /**
+             * Debounce function to delay execution until after calls stop
+             * Only executes after no calls for delay period
+             * @param {Function} func - Function to debounce
+             * @param {number} delay - Delay in ms to wait after last call
+             * @returns {Function} Debounced function
+             */
+            function debounce(func, delay) {
+                let timeoutId;
+                return function (...args) {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => func(...args), delay);
+                };
+            }
+
+            // Track mouse movement with throttling
+            const throttledUpdate = throttle(() => {
+                updateDisplay();
+            }, CONFIG.MOUSE_THROTTLE_MS);
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                throttledUpdate();
+            });
+
+            // Update button cache on window resize with debouncing
+            const debouncedResize = debounce(() => {
+                updateButtonCache();
+                updateDisplay();
+            }, CONFIG.RESIZE_DEBOUNCE_MS);
+
+            window.addEventListener('resize', debouncedResize);
+
+            // Handle button click
+            button.addEventListener('click', () => {
+                alert('Target acquired! 🎯');
+            });
+
+            // Handle highlight clickables toggle
+            const highlightCheckbox = document.getElementById('highlightClickables');
+            if (highlightCheckbox) {
+                highlightCheckbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        document.body.classList.add('highlight-clickables');
+                    } else {
+                        document.body.classList.remove('highlight-clickables');
+                    }
+                });
+            }
+
+            // Initialize button cache and display
+            updateButtonCache();
+            updateDisplay();
+        </script>
+    </body>
+</html>
