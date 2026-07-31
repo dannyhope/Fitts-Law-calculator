@@ -35,3 +35,6 @@ coverage/
 # Logs
 logs/
 *.log
+
+# Vibe coding conversations
+_vibing/
