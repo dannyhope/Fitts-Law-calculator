@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dannify status — Fitts' Law Calculator</title>
+  <link rel="stylesheet" href="operator.css">
+  <style>
+    .panel { margin: 0 0 1rem; }
+    .panel h2 { margin-top: 0; }
+    .panel ul { margin: 0 0 0.85rem; padding-left: 1.2rem; }
+    .panel li { margin: 0 0 0.35rem; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Dannify status — Fitts' Law Calculator</h1>
+    <p class="meta">Living audit. Regenerated whenever <code>/dannify</code> runs. Last updated: 2026-08-25.</p>
+    <p class="hint">What still needs doing, then what’s already up to spec. Product truth is <code>_docs/spec.md</code> and <code>_docs/design.md</code>. Current KPI is <code>_docs/now.md</code>. Extension surfaces audited via <code>/browser-extension</code>; look via <code>/design-system</code>.</p>
+
+    <section class="panel">
+      <h2>Improvements</h2>
+      <h3>Must</h3>
+      <ul>
+        <li>Add <code>_docs/spec.md</code> covering purpose, surfaces (standalone <code>index.html</code>, extension popup, content overlay), behaviour, non-goals, and an accessibility level</li>
+        <li>Add <code>_docs/design.md</code> as the look source of truth for the demo, popup, and overlay</li>
+        <li>Add “A Danny Hope product” attribution → <code>https://dannyhope.co.uk</code> in <code>index.html</code> and the extension popup footer</li>
+        <li>Point public feedback hrefs at <code>https://dannyhope.co.uk/feedback</code> (not <code>mailto:</code> Gmail) in <code>index.html</code>, popup, README, and extension README</li>
+        <li>Hop public third-party URLs: <code>manifest.json</code> <code>homepage_url</code> (and any public GitHub/store links) via dannyhope.co.uk</li>
+        <li>Add extension popup live preview: a <code>dev</code> script that opens the popup UI in a normal browser tab and reloads on save</li>
+        <li>Add <code>publish/index.html</code> Chrome Web Store listing pack (extension is shippable)</li>
+      </ul>
+      <h3>Should</h3>
+      <ul>
+        <li>Add <code>_docs/now.md</code> with the current KPI (set via <code>/goal</code> — do not invent)</li>
+        <li>Add this repo to Bombay <code>projects.json</code></li>
+        <li>Add usability-test scaffold (<code>_docs/usability-tasks.json</code> + <code>usability-test.html</code>)</li>
+        <li>Replace invented palettes in <code>index.html</code>, popup, and overlay CSS with colours from the brand palette</li>
+        <li>Product UI isn’t on shadcn (vanilla single-file demo + popup) — migrate when next doing non-trivial UI work, or document the exception in <code>design.md</code></li>
+        <li>British English in remaining Americanisms (e.g. extension README “Color coding”, <code>package.json</code> “visualization”)</li>
+        <li>Toolbar icons: mid-grey glyph on transparent (current icons are a solid green tile)</li>
+      </ul>
+      <h3>Nice</h3>
+      <ul>
+        <li>Offer Prototype Panels (Flags + site modes + docks) for the standalone web demo</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Already right</h2>
+      <ul>
+        <li>README purpose is clear before install/usage</li>
+        <li><code>.in/</code> inbox exists (with README)</li>
+        <li><code>.gitignore</code> includes <code>_vibing/</code> and <code>.DS_Store</code></li>
+        <li><code>_vibing/</code> directory exists</li>
+        <li><code>fitts-law-calculator.code-workspace</code> exists</li>
+        <li><code>CLAUDE.md</code> for development guidance</li>
+        <li>Extension is Manifest V3 (<code>action</code>, content scripts)</li>
+        <li>Load-unpacked steps in <code>extension/README.md</code></li>
+        <li>Extra <code>_docs/</code> with real content (architecture, standards, expertise, clarify-mode)</li>
+        <li>No theme picker / appearance toggle (OS follow not needed yet; no Auto/Light/Dark control)</li>
+        <li>No local server — <code>.dev-port</code> N/A</li>
+        <li>Not a Mac wrapper app — Open in browser / Rebuild desktop app N/A</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>
