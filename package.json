@@ -4,6 +4,9 @@
   "description": "Interactive demonstration of Shannon's formulation of Fitts' Law with real-time visualization",
   "main": "index.html",
   "scripts": {
+    "dev": "node scripts/dev-server.js",
+    "start": "npm run dev",
+    "check:local-domain": "scripts/ensure-local-domain.sh",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{js,html,css,md}\"",
     "format:check": "prettier --check \"**/*.{js,html,css,md}\""
