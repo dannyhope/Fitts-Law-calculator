@@ -363,7 +363,7 @@
     }
 
     // Listen for messages from popup
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    FittsBrowser.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === 'toggle') {
             toggle();
             sendResponse({
@@ -406,7 +406,7 @@
     });
 
     // Check initial state from storage
-    chrome.storage.local.get(
+    FittsBrowser.storage.local.get(
         ['fittsLawEnabled', 'fittsLawClarifyMode', 'fittsLawDimMode', 'fittsLawHighlightMode'],
         (result) => {
             debug('Initial load from storage:', result);
@@ -417,11 +417,11 @@
                 const shouldEnableClarify = result.fittsLawDimMode || result.fittsLawHighlightMode;
                 if (shouldEnableClarify) {
                     isClarifyModeEnabled = true;
-                    chrome.storage.local.set({ fittsLawClarifyMode: true });
+                    FittsBrowser.storage.local.set({ fittsLawClarifyMode: true });
                     debug('Migrated old settings to clarify mode');
                 }
                 // Clean up old keys
-                chrome.storage.local.remove(['fittsLawDimMode', 'fittsLawHighlightMode']);
+                FittsBrowser.storage.local.remove(['fittsLawDimMode', 'fittsLawHighlightMode']);
             } else if (result.fittsLawClarifyMode) {
                 // Load clarify mode preference from new setting
                 isClarifyModeEnabled = true;

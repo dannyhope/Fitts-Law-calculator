@@ -47,3 +47,25 @@
 - `content.js` - Main calculation and overlay logic
 - `popup.html/js` - Toggle interface
 - `background.js` - State persistence
+
+### Cross-browser WebExtension Packaging (2026-09)
+
+**Decision:** Keep one shared WebExtension source tree and isolate the browser
+API namespace behind `extension/lib/browser-api.js`.
+
+**Rationale:**
+- Chromium, Firefox, and Safari share the WebExtensions model but expose
+  different global namespaces and packaging workflows.
+- A narrow shared API boundary avoids duplicating popup and content-script
+  behaviour while leaving browser-specific packaging explicit.
+- Firefox receives a WebExtension manifest with a stable add-on ID. Safari is
+  packaged as an Xcode Safari Web Extension App because Safari distribution
+  requires an app container and Apple signing.
+
+**Release boundary:**
+- Chromium: load unpacked for development; publish a signed package through
+  the relevant browser store.
+- Firefox: temporary installation for development; publish a signed `.xpi`
+  through Firefox Add-ons.
+- Safari: generate and sign the Safari Web Extension App in Xcode; publish
+  through the Apple App Store.

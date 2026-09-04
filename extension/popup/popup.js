@@ -34,11 +34,11 @@
      */
     function sendMessageToCurrentTab(message) {
         return new Promise((resolve, reject) => {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            FittsBrowser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0]) {
-                    chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
-                        if (chrome.runtime.lastError) {
-                            reject(chrome.runtime.lastError);
+                    FittsBrowser.tabs.sendMessage(tabs[0].id, message, (response) => {
+                        if (FittsBrowser.runtime.lastError) {
+                            reject(FittsBrowser.runtime.lastError);
                         } else {
                             resolve(response);
                         }
@@ -59,7 +59,7 @@
             updateUI(response.enabled, response.clarifyMode);
 
             // Save state to storage
-            chrome.storage.local.set({ fittsLawEnabled: response.enabled });
+            FittsBrowser.storage.local.set({ fittsLawEnabled: response.enabled });
         } catch (error) {
             console.error('Error toggling overlay:', error);
             // Content script may not be loaded - user should refresh page
@@ -75,7 +75,7 @@
             updateUI(response.enabled, response.clarifyMode);
 
             // Save state to storage
-            chrome.storage.local.set({ fittsLawClarifyMode: response.clarifyMode });
+            FittsBrowser.storage.local.set({ fittsLawClarifyMode: response.clarifyMode });
         } catch (error) {
             console.error('Error toggling clarify mode:', error);
             // Content script may not be loaded - user should refresh page
@@ -92,7 +92,7 @@
         } catch (error) {
             // Content script may not be loaded yet - try to get from storage
             console.log('Content script not ready:', error);
-            chrome.storage.local.get(
+            FittsBrowser.storage.local.get(
                 ['fittsLawEnabled', 'fittsLawClarifyMode', 'fittsLawDimMode', 'fittsLawHighlightMode'],
                 (result) => {
                     // Migration: Convert old settings to new clarify mode
@@ -103,9 +103,9 @@
                     ) {
                         clarifyMode = result.fittsLawDimMode || result.fittsLawHighlightMode;
                         if (clarifyMode) {
-                            chrome.storage.local.set({ fittsLawClarifyMode: true });
+                            FittsBrowser.storage.local.set({ fittsLawClarifyMode: true });
                         }
-                        chrome.storage.local.remove(['fittsLawDimMode', 'fittsLawHighlightMode']);
+                        FittsBrowser.storage.local.remove(['fittsLawDimMode', 'fittsLawHighlightMode']);
                     }
                     updateUI(result.fittsLawEnabled || false, clarifyMode);
                 }

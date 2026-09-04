@@ -1,16 +1,39 @@
-# Fitts' Law Overlay - Chrome Extension
+# Fitts' Law Overlay - Browser Extension
 
-A Chrome extension that visualizes Fitts' Law acquisition times for every clickable element on any webpage.
+A WebExtension that visualises Fitts' Law acquisition times for every clickable element on any webpage.
+
+Supported browsers are the latest stable releases of Chromium-based browsers,
+Firefox, and Safari. The shared source is packaged as a Chromium/Firefox
+extension; Safari requires the companion Safari Web Extension project described
+below.
 
 ## Installation
 
-### From Source (Developer Mode)
+### Chromium from Source (Developer Mode)
 
 1. Clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
+2. Open the browser's extensions page (for Chrome, `chrome://extensions/`)
 3. Enable "Developer mode" (toggle in top-right)
 4. Click "Load unpacked"
 5. Select the `extension/` directory
+
+### Firefox from Source
+
+1. Open `about:debugging#/runtime/this-firefox`
+2. Select **Load Temporary Add-on…**
+3. Select `extension/manifest.json`
+
+Temporary Firefox installations are removed when Firefox closes. Public
+distribution uses Firefox Add-ons and requires a signed `.xpi` upload.
+
+### Safari
+
+Safari Web Extensions are distributed through a macOS app container. Create an
+Xcode **Safari Web Extension App** project, use the `extension/` directory as
+the web extension source, and select the Safari target when converting the
+Chrome manifest. Run the generated app to install locally in Safari. Public
+distribution requires an Apple Developer account, signing, notarisation where
+applicable, and App Store submission.
 
 ## Usage
 
@@ -46,7 +69,7 @@ The extension:
 
 ## Technical Details
 
-- **Manifest Version**: 3
+- **Manifest Version**: 3 (with Firefox `browser_specific_settings`)
 - **Permissions**: `activeTab`, `storage`
 - **Content Script**: Injected into all pages
 - **Update Rate**: ~60fps (requestAnimationFrame)
@@ -65,6 +88,7 @@ The extension:
 ```
 extension/
 ├── manifest.json          # Extension manifest
+├── lib/browser-api.js     # Shared browser API compatibility layer
 ├── popup/                 # Extension popup UI
 │   ├── popup.html
 │   └── popup.js
