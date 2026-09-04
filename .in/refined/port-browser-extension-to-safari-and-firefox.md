@@ -1,5 +1,6 @@
 # Port browser extension to Safari and Firefox
-**Readiness:** auto-refined
+**Readiness:** refined
+**Partially refined:** 2026-09-04
 **Roadmap:** now
 
 Port the existing browser extension to Safari and Firefox.
@@ -45,23 +46,23 @@ Port the existing browser extension to Safari and Firefox.
 ### Questions for refinement
 1. **Which Safari and Firefox minimum versions should be supported?** Older versions can constrain manifest features and API choices.
 
-   **Answer:**
+   **Answer:** just the latest ones
 
 2. **What does “produce Safari build outputs” mean for Safari?** Choose a local unsigned Safari Web Extension project for development, an Xcode archive ready for signing, or a fully distributable App Store package.
 
-   **Answer:**
+   **Answer:** Safari web extension
 
 3. **Which distribution channels are required?** Choose Firefox Add-ons plus Apple App Store, direct/private distribution, or development-only loading.
 
-   **Answer:**
+   **Answer:** These things should be made public.
 
 4. **Should the compatibility layer support only this extension’s current APIs, or also normalise future WebExtension differences?** A narrow wrapper is smaller; a broader abstraction increases portability but adds maintenance.
 
-   **Answer:**
+   **Answer:** Broader abstraction.
 
 5. **What testing evidence is required before calling this complete?** For example, manual smoke tests on installed Safari and Firefox builds, automated unit tests for Fitts’ Law calculations, or both.
 
-   **Answer:**
+   **Answer:** People can, when told the name of the thing, install it on any of the browsers mentioned above
 
 ### Documentation impact
 - Update `_docs/spec.md` with supported browsers, extension behaviour, and browser-specific limitations.
