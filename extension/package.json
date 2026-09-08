@@ -1,0 +1,26 @@
+{
+  "name": "extension",
+  "version": "1.0.0",
+  "description": "A Chrome extension that visualizes Fitts' Law acquisition times for every clickable element on any webpage.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "^0.2.9",
+    "@types/node": "^26.5.0",
+    "typescript": "^7.0.2",
+    "wxt": "^0.21.4"
+  }
+}
