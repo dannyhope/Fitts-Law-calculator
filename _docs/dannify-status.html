@@ -15,52 +15,61 @@
 <body>
   <div class="page">
     <h1>Dannify status — Fitts' Law Calculator</h1>
-    <p class="meta">Living audit. Regenerated whenever <code>/dannify</code> runs. Last updated: 2026-08-28.</p>
-    <p class="hint">What still needs doing, then what’s already up to spec. Product truth is <code>_docs/spec.md</code> and <code>_docs/design.md</code>. Current KPI is <code>_docs/now.md</code>. Extension surfaces audited via <code>/browser-extension</code>; look via <code>/design-system</code>.</p>
+    <p class="meta">Living audit. Regenerated whenever <code>/dannify</code> runs. Last updated: 2026-09-07.</p>
+    <p class="hint">What still needs doing, then what’s already up to spec. Product truth is <code>_docs/spec.md</code> and <code>_docs/design.md</code>. Current KPI is <code>_docs/now.md</code>.</p>
 
     <section class="panel">
       <h2>Improvements</h2>
       <h3>Must</h3>
       <ul>
-        <li>Add <code>_docs/spec.md</code> covering purpose, surfaces (standalone <code>index.html</code>, extension popup, content overlay), behaviour, non-goals, and an accessibility level</li>
-        <li>Add <code>_docs/design.md</code> as the look source of truth for the demo, popup, and overlay</li>
-        <li>Add “A Danny Hope product” attribution → <code>https://dannyhope.co.uk</code> in <code>index.html</code> and the extension popup footer</li>
-        <li>Point public feedback hrefs at <code>https://dannyhope.co.uk/feedback</code> (not <code>mailto:</code> Gmail) in <code>index.html</code>, popup, README, and extension README</li>
-        <li>Hop public third-party URLs: extension <code>homepage_url</code> (and any public GitHub/store links) via dannyhope.co.uk</li>
-        <li>Add extension popup live preview: a <code>dev</code> script that opens the popup UI in a normal browser tab and reloads on save</li>
-        <li>Add <code>publish/index.html</code> Chrome Web Store listing pack (extension is shippable)</li>
+        <li>Expand <code>_docs/spec.md</code> to state the product purpose, all user-facing surfaces, behaviour, non-goals, and an explicit accessibility level</li>
+        <li>Expand <code>_docs/design.md</code> into the look source of truth for the standalone demo, extension popup, and injected overlay</li>
+        <li>Add “A Danny Hope product” attribution → <code>https://dannyhope.co.uk</code> to <code>index.html</code> and the extension popup</li>
+        <li>Replace public Gmail feedback links with <code>https://dannyhope.co.uk/feedback</code> in the app, extension popup, README, and extension README</li>
+        <li>Replace public third-party homepage/store links with stable <code>dannyhope.co.uk</code> hops where they are user-facing</li>
+        <li>Add <code>publish/index.html</code> as the Chrome Web Store listing pack for the shippable extension</li>
       </ul>
       <h3>Should</h3>
       <ul>
-        <li>Add <code>_docs/now.md</code> with the current KPI (set via <code>/goal</code> — do not invent)</li>
-        <li>Add this repo to Bombay <code>projects.json</code></li>
-        <li>Add usability-test scaffold (<code>_docs/usability-tasks.json</code> + <code>usability-test.html</code>)</li>
-        <li>Replace invented palettes in <code>index.html</code>, popup, and overlay CSS with colours from the brand palette</li>
-        <li>Product UI isn’t on shadcn (vanilla single-file demo + popup) — migrate when next doing non-trivial UI work, or document the exception in <code>design.md</code></li>
-        <li>Use British English in remaining Americanisms (for example extension README “Color coding”, manifest “Visualize”, and package metadata “visualization”)</li>
-        <li>Toolbar icons: mid-grey glyph on transparent (current icons are a solid green tile)</li>
+        <li>Add <code>_docs/now.md</code> with a Danny-chosen current KPI and parent goal via <code>/goal</code>; no goal is currently verified locally</li>
+        <li>Run the applicable product-validity, evidence, usability, design-system, accessibility, security, performance, and deployment checkers; record their results under <code>_docs/checks/</code></li>
+        <li>Add the project to Bombay <code>projects.json</code></li>
+        <li>Add a usability-test runner (<code>_docs/usability-tasks.json</code> and <code>usability-test.html</code>) from the existing cognitive-walkthrough issue</li>
+        <li>Wire the local development command through the committed port resolver and ensure-local-domain check, then document the preferred port</li>
+        <li>Replace invented product colours in <code>index.html</code> and extension UI with the approved brand/extension tokens</li>
+        <li>Use British English in remaining Americanisms such as “Color”, “Visualize”, and “visualization”</li>
+        <li>Add the required Shift+? / Shift+/ keyboard-shortcut overlay if the product exposes shortcuts; otherwise document that no shortcuts exist</li>
+        <li>Add an executable, documented <code>scripts/launch.sh</code> launcher for the local demo</li>
       </ul>
       <h3>Nice</h3>
       <ul>
-        <li>Offer Prototype Panels (Flags + site modes + docks) for the standalone web demo</li>
+        <li>Offer the shared Prototype Panels developer surface for the standalone demo</li>
+        <li>Document the existing single-file vanilla UI as a deliberate shadcn exception until the next non-trivial UI change</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>Goal alignment</h2>
+      <ul>
+        <li><strong>No demonstrated relationship:</strong> no local <code>_docs/now.md</code> and no refreshed canonical Goals-page relationship were available during this audit. Choose or verify a current goal before adding one.</li>
+        <li><strong>Candidate direction:</strong> use the calculator as a tryable teaching/demo artefact, with success measured by a specified number of independent people using it and responding to the explanation. This is a candidate, not a current goal.</li>
       </ul>
     </section>
 
     <section class="panel">
       <h2>Already right</h2>
       <ul>
-        <li>README purpose is clear before install/usage</li>
-        <li><code>.in/</code> inbox exists (with README)</li>
+        <li>README purpose appears before installation and usage</li>
+        <li><code>.in/</code> inbox exists, including closed/refined workflow material</li>
         <li><code>.gitignore</code> includes <code>_vibing/</code> and <code>.DS_Store</code></li>
-        <li><code>_vibing/</code> directory exists</li>
-        <li><code>fitts-law-calculator.code-workspace</code> exists</li>
-        <li><code>CLAUDE.md</code> for development guidance</li>
-        <li>Extension is Manifest V3 (<code>action</code>, content scripts)</li>
-        <li>Load-unpacked steps in <code>extension/README.md</code></li>
-        <li>Extra <code>_docs/</code> with real content (architecture, standards, expertise, clarify-mode)</li>
-        <li>No theme picker / appearance toggle (OS follow not needed yet; no Auto/Light/Dark control)</li>
-        <li>No local server — <code>.dev-port</code> N/A</li>
-        <li>Not a Mac wrapper app — Open in browser / Rebuild desktop app N/A</li>
+        <li><code>_vibing/</code> directory and <code>fitts-law-calculator.code-workspace</code> exist</li>
+        <li><code>CLAUDE.md</code> provides repository guidance</li>
+        <li>Chrome extension is Manifest V3 and has load-unpacked instructions</li>
+        <li><code>_docs/spec.md</code> and <code>_docs/design.md</code> exist, though they need the content above</li>
+        <li>Committed <code>.local-domain</code> resolves to loopback; <code>.dev-port</code> is present</li>
+        <li>No theme picker or Mac wrapper app was detected</li>
+        <li>Existing usability issue is recorded in the required cognitive-walkthrough format</li>
+        <li>No checker result files exist yet, so no stale or failed result was misrepresented as a pass</li>
       </ul>
     </section>
   </div>
