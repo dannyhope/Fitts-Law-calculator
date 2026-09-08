@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": ["chrome", "node"]
+  },
+  "include": ["entrypoints/**/*", "utils/**/*", "wxt.config.ts"],
+  "exclude": ["node_modules", ".output"]
+}
